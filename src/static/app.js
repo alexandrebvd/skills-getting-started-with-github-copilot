@@ -55,10 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
         
         <div class="signup-section">
             <input type="email" placeholder="Enter your email" class="email-input">
-            <button onclick="signUpForActivity('${activityName}', this)" class="signup-btn">Sign Up</button>
+            <button class="signup-btn">Sign Up</button>
         </div>
     `;
     
+    // Attach event listener to the signup button
+    const signupBtn = card.querySelector('.signup-btn');
+    signupBtn.addEventListener('click', function() {
+        // Assuming signUpForActivity is defined globally
+        signUpForActivity(activityName, signupBtn);
+    });
     return card;
   }
 
