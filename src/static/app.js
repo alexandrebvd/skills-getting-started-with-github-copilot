@@ -77,31 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     card.appendChild(participantsSection);
 
-    // Signup section
-    const signupSection = document.createElement('div');
-    signupSection.className = 'signup-section';
-
-    const emailInput = document.createElement('input');
-    emailInput.type = 'email';
-    emailInput.placeholder = 'Enter your email';
-    emailInput.className = 'email-input';
-    signupSection.appendChild(emailInput);
-
-    const signupBtn = document.createElement('button');
-    signupBtn.className = 'signup-btn';
-    signupBtn.textContent = 'Sign Up';
-    signupBtn.onclick = function() {
-      signUpForActivity(activityName, this);
-    };
-    signupSection.appendChild(signupBtn);
-
-    card.appendChild(signupSection);
-    // Attach event listener to the signup button
-    const signupBtn = card.querySelector('.signup-btn');
-    signupBtn.addEventListener('click', function() {
-        // Assuming signUpForActivity is defined globally
-        signUpForActivity(activityName, signupBtn);
-    });
     return card;
   }
 
