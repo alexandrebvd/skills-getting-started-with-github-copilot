@@ -15,17 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
-        const activityCard = document.createElement("div");
-        activityCard.className = "activity-card";
-
-        const spotsLeft = details.max_participants - details.participants.length;
-
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+        const activityCard = createActivityCard(name, details);
 
         activitiesList.appendChild(activityCard);
 
@@ -39,6 +29,80 @@ document.addEventListener("DOMContentLoaded", () => {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
+  }
+
+  function createActivityCard(activityName, activityData) {
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+    
+    // Create card header and details
+    const header = document.createElement('h3');
+    header.textContent = activityName;
+    card.appendChild(header);
+
+    const desc = document.createElement('p');
+    desc.innerHTML = `<strong>Description:</strong> ${activityData.description}`;
+    card.appendChild(desc);
+
+    const schedule = document.createElement('p');
+    schedule.innerHTML = `<strong>Schedule:</strong> ${activityData.schedule}`;
+    card.appendChild(schedule);
+
+    const capacity = document.createElement('p');
+    capacity.innerHTML = `<strong>Capacity:</strong> ${activityData.participants.length}/${activityData.max_participants}`;
+    card.appendChild(capacity);
+
+    // Participants section
+    const participantsSection = document.createElement('div');
+    participantsSection.className = 'participants-section';
+
+    const participantsHeader = document.createElement('h4');
+    participantsHeader.textContent = 'Current Participants:';
+    participantsSection.appendChild(participantsHeader);
+
+    if (activityData.participants.length > 0) {
+      const ul = document.createElement('ul');
+      ul.className = 'participants-list';
+      activityData.participants.forEach(participant => {
+        const li = document.createElement('li');
+        li.textContent = participant;
+        ul.appendChild(li);
+      });
+      participantsSection.appendChild(ul);
+    } else {
+      const noParticipants = document.createElement('p');
+      noParticipants.className = 'no-participants';
+      noParticipants.textContent = 'No participants yet';
+      participantsSection.appendChild(noParticipants);
+    }
+    card.appendChild(participantsSection);
+
+    // Signup section
+    const signupSection = document.createElement('div');
+    signupSection.className = 'signup-section';
+
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.placeholder = 'Enter your email';
+    emailInput.className = 'email-input';
+    signupSection.appendChild(emailInput);
+
+    const signupBtn = document.createElement('button');
+    signupBtn.className = 'signup-btn';
+    signupBtn.textContent = 'Sign Up';
+    signupBtn.onclick = function() {
+      signUpForActivity(activityName, this);
+    };
+    signupSection.appendChild(signupBtn);
+
+    card.appendChild(signupSection);
+    // Attach event listener to the signup button
+    const signupBtn = card.querySelector('.signup-btn');
+    signupBtn.addEventListener('click', function() {
+        // Assuming signUpForActivity is defined globally
+        signUpForActivity(activityName, signupBtn);
+    });
+    return card;
   }
 
   // Handle form submission
