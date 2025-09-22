@@ -15,17 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
-        const activityCard = document.createElement("div");
-        activityCard.className = "activity-card";
-
-        const spotsLeft = details.max_participants - details.participants.length;
-
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+        const activityCard = createActivityCard(name, details);
 
         activitiesList.appendChild(activityCard);
 
@@ -39,6 +29,37 @@ document.addEventListener("DOMContentLoaded", () => {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
     }
+  }
+
+  function createActivityCard(activityName, activityData) {
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+    
+    const participantsList = activityData.participants.map(participant => 
+        `<li>${participant}</li>`
+    ).join('');
+    
+    card.innerHTML = `
+        <h3>${activityName}</h3>
+        <p><strong>Description:</strong> ${activityData.description}</p>
+        <p><strong>Schedule:</strong> ${activityData.schedule}</p>
+        <p><strong>Capacity:</strong> ${activityData.participants.length}/${activityData.max_participants}</p>
+        
+        <div class="participants-section">
+            <h4>Current Participants:</h4>
+            ${activityData.participants.length > 0 ? 
+                `<ul class="participants-list">${participantsList}</ul>` : 
+                '<p class="no-participants">No participants yet</p>'
+            }
+        </div>
+        
+        <div class="signup-section">
+            <input type="email" placeholder="Enter your email" class="email-input">
+            <button onclick="signUpForActivity('${activityName}', this)" class="signup-btn">Sign Up</button>
+        </div>
+    `;
+    
+    return card;
   }
 
   // Handle form submission
